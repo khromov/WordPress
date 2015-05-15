@@ -30,45 +30,57 @@ global $wp_version, $wp_db_version, $tinymce_version, $required_php_version, $re
 require( ABSPATH . WPINC . '/version.php' );
 
 // Set initial default constants including WP_MEMORY_LIMIT, WP_MAX_MEMORY_LIMIT, WP_DEBUG, WP_CONTENT_DIR and WP_CACHE.
+//TODO: More work to be done here
 wp_initial_constants();
 
 // Check for the required PHP version and for the MySQL extension or a database drop-in.
-wp_check_php_mysql_versions();
+//TODO: Remove this altogether, bundle as external tool? (is-wp-compatible-with-my-server.php etc..)
+//wp_check_php_mysql_versions();
 
 // Disable magic quotes at runtime. Magic quotes are added using wpdb later in wp-settings.php.
-@ini_set( 'magic_quotes_runtime', 0 );
-@ini_set( 'magic_quotes_sybase',  0 );
+//TODO: We may need this.
+//@ini_set( 'magic_quotes_runtime', 0 );
+//@ini_set( 'magic_quotes_sybase',  0 );
 
 // WordPress calculates offsets from UTC.
 date_default_timezone_set( 'UTC' );
 
 // Turn register_globals off.
-wp_unregister_GLOBALS();
+//wp_unregister_GLOBALS();
 
 // Standardize $_SERVER variables across setups.
-wp_fix_server_vars();
+//FIXME: Make sure everything still works.
+//wp_fix_server_vars();
 
 // Check if we have received a request due to missing favicon.ico
-wp_favicon_request();
+//wp_favicon_request();
 
 // Check if we're in maintenance mode.
+//Slimmed down...
 wp_maintenance();
 
 // Start loading timer.
+//TODO: why?
 timer_start();
 
 // Check if we're in WP_DEBUG mode.
+//TODO will leave...for now
 wp_debug_mode();
 
 // For an advanced caching plugin to use. Uses a static drop-in because you would only want one.
+//TODO: can optimize?
 if ( WP_CACHE )
 	WP_DEBUG ? include( WP_CONTENT_DIR . '/advanced-cache.php' ) : @include( WP_CONTENT_DIR . '/advanced-cache.php' );
 
 // Define WP_LANG_DIR if not set.
+//TODO: needs to be looked over
 wp_set_lang_dir();
 
 // Load early WordPress files.
-require( ABSPATH . WPINC . '/compat.php' );
+//TODO: No compat checking. Make compat script.
+//require( ABSPATH . WPINC . '/compat.php' );
+
+//TODO: Go through and eliminate heavy code code
 require( ABSPATH . WPINC . '/functions.php' );
 require( ABSPATH . WPINC . '/class-wp.php' );
 require( ABSPATH . WPINC . '/class-wp-error.php' );
@@ -88,6 +100,7 @@ wp_start_object_cache();
 // Attach the default filters.
 require( ABSPATH . WPINC . '/default-filters.php' );
 
+//TODO
 // Initialize multisite if enabled.
 if ( is_multisite() ) {
 	require( ABSPATH . WPINC . '/ms-blogs.php' );
@@ -105,10 +118,12 @@ if ( SHORTINIT )
 // Load the L10n library.
 require_once( ABSPATH . WPINC . '/l10n.php' );
 
-// Run the installer if WordPress is not installed.
-wp_not_installed();
+// Run the installer if WordPress is not installed
+//FIXME: This will break new installs
+//wp_not_installed();
 
 // Load most of WordPress.
+//TODO: Put these in same file?
 require( ABSPATH . WPINC . '/class-wp-walker.php' );
 require( ABSPATH . WPINC . '/class-wp-ajax-response.php' );
 require( ABSPATH . WPINC . '/formatting.php' );
@@ -163,11 +178,13 @@ if ( is_multisite() ) {
 
 // Define constants that rely on the API to obtain the default value.
 // Define must-use plugin directory constants, which may be overridden in the sunrise.php drop-in.
+//TODO: force everything to be verbose in config
 wp_plugin_directory_constants();
 
 $GLOBALS['wp_plugin_paths'] = array();
 
 // Load must-use plugins.
+//TODO: Cache?
 foreach ( wp_get_mu_plugins() as $mu_plugin ) {
 	include_once( $mu_plugin );
 }

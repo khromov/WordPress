@@ -44,55 +44,23 @@ function wp_unregister_GLOBALS() {
 function wp_fix_server_vars() {
 	global $PHP_SELF;
 
+	//TODO: When are these actually required?
+	/*
 	$default_server_values = array(
 		'SERVER_SOFTWARE' => '',
 		'REQUEST_URI' => '',
 	);
 
 	$_SERVER = array_merge( $default_server_values, $_SERVER );
-
-	// Fix for IIS when running with PHP ISAPI
-	if ( empty( $_SERVER['REQUEST_URI'] ) || ( PHP_SAPI != 'cgi-fcgi' && preg_match( '/^Microsoft-IIS\//', $_SERVER['SERVER_SOFTWARE'] ) ) ) {
-
-		// IIS Mod-Rewrite
-		if ( isset( $_SERVER['HTTP_X_ORIGINAL_URL'] ) ) {
-			$_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_ORIGINAL_URL'];
-		}
-		// IIS Isapi_Rewrite
-		elseif ( isset( $_SERVER['HTTP_X_REWRITE_URL'] ) ) {
-			$_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_REWRITE_URL'];
-		} else {
-			// Use ORIG_PATH_INFO if there is no PATH_INFO
-			if ( !isset( $_SERVER['PATH_INFO'] ) && isset( $_SERVER['ORIG_PATH_INFO'] ) )
-				$_SERVER['PATH_INFO'] = $_SERVER['ORIG_PATH_INFO'];
-
-			// Some IIS + PHP configurations puts the script-name in the path-info (No need to append it twice)
-			if ( isset( $_SERVER['PATH_INFO'] ) ) {
-				if ( $_SERVER['PATH_INFO'] == $_SERVER['SCRIPT_NAME'] )
-					$_SERVER['REQUEST_URI'] = $_SERVER['PATH_INFO'];
-				else
-					$_SERVER['REQUEST_URI'] = $_SERVER['SCRIPT_NAME'] . $_SERVER['PATH_INFO'];
-			}
-
-			// Append the query string if it exists and isn't null
-			if ( ! empty( $_SERVER['QUERY_STRING'] ) ) {
-				$_SERVER['REQUEST_URI'] .= '?' . $_SERVER['QUERY_STRING'];
-			}
-		}
-	}
-
-	// Fix for PHP as CGI hosts that set SCRIPT_FILENAME to something ending in php.cgi for all requests
-	if ( isset( $_SERVER['SCRIPT_FILENAME'] ) && ( strpos( $_SERVER['SCRIPT_FILENAME'], 'php.cgi' ) == strlen( $_SERVER['SCRIPT_FILENAME'] ) - 7 ) )
-		$_SERVER['SCRIPT_FILENAME'] = $_SERVER['PATH_TRANSLATED'];
-
-	// Fix for Dreamhost and other PHP as CGI hosts
-	if ( strpos( $_SERVER['SCRIPT_NAME'], 'php.cgi' ) !== false )
-		unset( $_SERVER['PATH_INFO'] );
+	*/
 
 	// Fix empty PHP_SELF
+	//TODO: Fix this instead... http://thehungrycoder.com/tutorial/php_self-is-empty.html
+	/*
 	$PHP_SELF = $_SERVER['PHP_SELF'];
 	if ( empty( $PHP_SELF ) )
 		$_SERVER['PHP_SELF'] = $PHP_SELF = preg_replace( '/(\?.*)?$/', '', $_SERVER["REQUEST_URI"] );
+	*/
 }
 
 /**
@@ -159,19 +127,14 @@ function wp_maintenance() {
 	if ( !file_exists( ABSPATH . '.maintenance' ) || defined( 'WP_INSTALLING' ) )
 		return;
 
-	global $upgrading;
-
-	include( ABSPATH . '.maintenance' );
-	// If the $upgrading timestamp is older than 10 minutes, don't die.
-	if ( ( time() - $upgrading ) >= 600 )
-		return;
-
+	//TODO: Will keep override for now
 	if ( file_exists( WP_CONTENT_DIR . '/maintenance.php' ) ) {
 		require_once( WP_CONTENT_DIR . '/maintenance.php' );
 		die();
 	}
 
-	wp_load_translations_early();
+	//No bloated translations plox
+	//wp_load_translations_early();
 
 	$protocol = $_SERVER["SERVER_PROTOCOL"];
 	if ( 'HTTP/1.1' != $protocol && 'HTTP/1.0' != $protocol )
@@ -181,14 +144,13 @@ function wp_maintenance() {
 	header( 'Retry-After: 600' );
 ?>
 	<!DOCTYPE html>
-	<html xmlns="http://www.w3.org/1999/xhtml"<?php if ( is_rtl() ) echo ' dir="rtl"'; ?>>
+	<html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title><?php _e( 'Maintenance' ); ?></title>
-
+		<title>Maintenance</title>
 	</head>
 	<body>
-		<h1><?php _e( 'Briefly unavailable for scheduled maintenance. Check back in a minute.' ); ?></h1>
+		<h1>Briefly unavailable for scheduled maintenance. Check back in a minute.</h1>
 	</body>
 	</html>
 <?php
@@ -343,6 +305,8 @@ function require_wp_db() {
 	global $wpdb;
 
 	require_once( ABSPATH . WPINC . '/wp-db.php' );
+
+	//TODO: This is loaded after wp db, nice dropin to know
 	if ( file_exists( WP_CONTENT_DIR . '/db.php' ) )
 		require_once( WP_CONTENT_DIR . '/db.php' );
 
