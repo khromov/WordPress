@@ -38,6 +38,7 @@ function wp_initial_constants() {
 	if ( ! isset($blog_id) )
 		$blog_id = 1;
 
+	//TODO: Force these to be set in wp-config or cache somehow?
 	if ( !defined('WP_CONTENT_DIR') )
 		define( 'WP_CONTENT_DIR', ABSPATH . 'wp-content' ); // no trailing slash, full paths only - WP_CONTENT_URL is defined further down
 
@@ -69,10 +70,10 @@ function wp_initial_constants() {
 	// Constants for expressing human-readable intervals
 	// in their respective number of seconds.
 	define( 'MINUTE_IN_SECONDS', 60 );
-	define( 'HOUR_IN_SECONDS',   60 * MINUTE_IN_SECONDS );
-	define( 'DAY_IN_SECONDS',    24 * HOUR_IN_SECONDS   );
-	define( 'WEEK_IN_SECONDS',    7 * DAY_IN_SECONDS    );
-	define( 'YEAR_IN_SECONDS',  365 * DAY_IN_SECONDS    );
+	define( 'HOUR_IN_SECONDS',   3600 );
+	define( 'DAY_IN_SECONDS',    86400   );
+	define( 'WEEK_IN_SECONDS',   604800    );
+	define( 'YEAR_IN_SECONDS',  31536000  );
 }
 
 /**
