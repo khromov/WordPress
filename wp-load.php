@@ -30,6 +30,9 @@ error_reporting( E_CORE_ERROR | E_CORE_WARNING | E_COMPILE_ERROR | E_ERROR | E_W
  * and /blog/ is WordPress(b).
  *
  * If neither set of conditions is true, initiate loading the setup process.
+ *
+ * TODO: this is for being able to place wp-config.php outside the wp root.
+ * TODO: Maybe remove?
  */
 if ( file_exists( ABSPATH . 'wp-config.php') ) {
 
